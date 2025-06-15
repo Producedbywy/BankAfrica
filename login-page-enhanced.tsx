@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { Card, CardContent, CardHeader, CardTitle } from "'components/ui/card'"
-import { Input } from "'components/ui/input'"
-import { Button } from "'components/ui/button'"
-import { Navigation } from "'components/Navigation'"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Navigation } from "@/components/Navigation"
 import Link from "next/link"
 import { signIn } from "next-auth/react"
 

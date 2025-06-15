@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 23, "column": 0}, "map": {"version":3,"sources":["turbopack:///[project]/src/middleware.ts"],"sourcesContent":["import { withAuth } from \"next-auth/middleware\"\nimport { NextResponse } from \"next/server\"\n\nexport default withAuth(\n  function middleware(req) {\n    // Add custom middleware logic here if needed\n    return NextResponse.next()\n  },\n  {\n    callbacks: {\n      authorized: ({ token }) => !!token,\n    },\n    pages: {\n      signIn: \"/login\",\n    },\n  }\n)\n\nexport const config = {\n  matcher: [\n    // Protected routes that require authentication\n    \"/\",\n    \"/mobile/:path*\",\n    \"/convert/:path*\",\n    \"/cards/:path*\",\n    \"/api/account/:path*\",\n    \"/api/transactions/:path*\",\n    \"/api/mobile/:path*\",\n    \"/api/currency/:path*\",\n    \"/api/cards/:path*\",\n  ],\n}\n"],"names":[],"mappings":";;;;AAAA;AACA;AAAA;;;uCAEe,CAAA,GAAA,kJAAA,CAAA,WAAQ,AAAD,EACpB,SAAS,WAAW,GAAG;IACrB,6CAA6C;IAC7C,OAAO,6LAAA,CAAA,eAAY,CAAC,IAAI;AAC1B,GACA;IACE,WAAW;QACT,YAAY,CAAC,EAAE,KAAK,EAAE,GAAK,CAAC,CAAC;IAC/B;IACA,OAAO;QACL,QAAQ;IACV;AACF;AAGK,MAAM,SAAS;IACpB,SAAS;QACP,+CAA+C;QAC/C;QACA;QACA;QACA;QACA;QACA;QACA;QACA;QACA;KACD;AACH"}}]
-}
