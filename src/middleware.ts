@@ -1,32 +1,33 @@
-import { withAuth } from "next-auth/middleware"
-import { NextResponse } from "next/server"
+import { withAuth } from "next-auth/middleware";
+import { NextResponse } from "next/server";
 
 export default withAuth(
   function middleware(req) {
-    // Add custom middleware logic here if needed
-    return NextResponse.next()
+    return NextResponse.next();
   },
   {
     callbacks: {
-      authorized: ({ token }) => !!token,
+      authorized: ({ token }) => !!token,  // ✅ Allow access if valid token exists
     },
     pages: {
-      signIn: "/login",
+      signIn: "/login",  // ✅ Custom login page
     },
   }
-)
+);
 
+// ✅ Fully cleaned matcher for Phase 1 (protects everything except public routes)
 export const config = {
   matcher: [
-    // Protected routes that require authentication
-    "/",
+    "/",  // protect root
+    "/wallet/:path*",
+    "/account/:path*",
     "/mobile/:path*",
     "/convert/:path*",
     "/cards/:path*",
-    "/api/account/:path*",
-    "/api/transactions/:path*",
-    "/api/mobile/:path*",
-    "/api/currency/:path*",
-    "/api/cards/:path*",
+    "/profile/:path*",
+    "/settings/:path*",
+
+    // ✅ Protect API routes (but allow NextAuth itself)
+    "/api/(account|transactions|mobile|currency|cards)/:path*"
   ],
-}
+};

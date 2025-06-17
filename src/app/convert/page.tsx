@@ -1,142 +1,143 @@
-import { Navigation } from "@/components/Navigation"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+"use client";
+
+import { useState, useEffect } from "react";
+import { Navigation } from "@/components/Navigation";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select";
 
 const currencies = [
+  { code: "GHS", name: "Ghana Cedi", symbol: "₵" },
   { code: "USD", name: "US Dollar", symbol: "$" },
   { code: "EUR", name: "Euro", symbol: "€" },
   { code: "GBP", name: "British Pound", symbol: "£" },
-  { code: "JPY", name: "Japanese Yen", symbol: "¥" },
-]
+  { code: "CNY", name: "Chinese Yuan", symbol: "¥" },
+];
 
-const rates = [
-  { from: "USD", to: "EUR", rate: 0.92 },
-  { from: "USD", to: "GBP", rate: 0.79 },
-  { from: "EUR", to: "GBP", rate: 0.86 },
-]
+// ⚠ Fully simulated exchange rates:
+const exchangeRates: Record<string, number> = {
+  "GHSUSD": 0.084,
+  "GHSGBP": 0.066,
+  "GHSEUR": 0.077,
+  "GHSCNY": 0.61,
+  "USDGHS": 11.9,
+  "USDEUR": 0.92,
+  "USDGBP": 0.79,
+  "USDCNY": 7.2,
+  "EURUSD": 1.09,
+  "EURGBP": 0.86,
+  "EURGHS": 13.1,
+  "EURCNY": 7.8,
+};
 
-export default function CurrencyConversion() {
+export default function CurrencyConversionPage() {
+  const [from, setFrom] = useState("GHS");
+  const [to, setTo] = useState("USD");
+  const [amount, setAmount] = useState<number>(0);
+  const [converted, setConverted] = useState<number>(0);
+
+  useEffect(() => {
+    const key = `${from}${to}`;
+    const rate = exchangeRates[key] ?? 1;
+    setConverted(amount * rate);
+  }, [from, to, amount]);
+
   return (
-    <main>
+    <main className="min-h-screen bg-background">
       <Navigation />
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-        <div className="space-y-8">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Currency Exchange</h1>
-            <p className="mt-1 text-sm text-gray-500">
-              Convert currencies and track exchange rates
-            </p>
-          </div>
+      <div className="mx-auto max-w-4xl px-4 py-10">
+        <h1 className="text-3xl font-bold text-foreground mb-6">Currency Exchange</h1>
 
-          <div className="grid gap-8 md:grid-cols-2">
-            {/* Currency Converter */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Convert Currency</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-sm font-medium">From</label>
-                    <div className="mt-1 grid grid-cols-2 gap-4">
-                      <Select>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select currency" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {currencies.map((currency) => (
-                            <SelectItem key={currency.code} value={currency.code}>
-                              {currency.symbol} {currency.code}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <Input type="number" placeholder="0.00" />
-                    </div>
-                  </div>
+        <Card className="bg-gradient-to-br from-[#003943] to-[#006173] card border-0">
+          <CardHeader>
+            <CardTitle className="text-xl text-white">Convert Currency</CardTitle>
+          </CardHeader>
 
-                  <div>
-                    <label className="text-sm font-medium">To</label>
-                    <div className="mt-1 grid grid-cols-2 gap-4">
-                      <Select>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select currency" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {currencies.map((currency) => (
-                            <SelectItem key={currency.code} value={currency.code}>
-                              {currency.symbol} {currency.code}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <Input type="number" placeholder="0.00" disabled />
-                    </div>
-                  </div>
-                </div>
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* FROM */}
+              <div>
+                <label className="block text-sm mb-2 text-white">From</label>
+                <Select value={from} onValueChange={(val) => setFrom(val)}>
+                  <SelectTrigger className="bg-lumoSurface border-lumoSurface text-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                <SelectContent className="bg-[#0B1528] border-lumoSurface text-white">
+  {currencies.map((cur) => (
+    <SelectItem
+      key={cur.code}
+      value={cur.code}
+      className="text-white hover:text-white hover:bg-lumoSurface"
+    >
+      {cur.symbol} {cur.code}
+    </SelectItem>
+  ))}
+</SelectContent>
 
-                <Button className="w-full bg-black hover:bg-gray-800">
-                  Convert & Exchange
-                </Button>
+                </Select>
+              </div>
 
-                <p className="text-sm text-gray-500 text-center">
-                  1 USD = 0.92 EUR
-                  <br />
-                  <span className="text-xs">
-                    Last updated: {new Date().toLocaleString()}
-                  </span>
-                </p>
-              </CardContent>
-            </Card>
+              {/* TO */}
+              <div>
+                <label className="block text-sm mb-2 text-white">To</label>
+                <Select value={to} onValueChange={(val) => setTo(val)}>
+                  <SelectTrigger className="bg-lumoSurface border-lumoSurface text-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#0B1528] border-lumoSurface text-white">
+  {currencies.map((cur) => (
+    <SelectItem
+      key={cur.code}
+      value={cur.code}
+      className="text-white hover:text-white hover:bg-lumoSurface"
+    >
+      {cur.symbol} {cur.code}
+    </SelectItem>
+  ))}
+</SelectContent>
 
-            {/* Exchange Rates */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Live Exchange Rates</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {rates.map((rate) => (
-                    <div
-                      key={`${rate.from}-${rate.to}`}
-                      className="flex items-center justify-between p-4 rounded-lg border border-gray-100"
-                    >
-                      <div className="flex items-center space-x-2">
-                        <span className="font-medium">
-                          {rate.from} → {rate.to}
-                        </span>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-medium">{rate.rate}</p>
-                        <Button variant="outline" size="sm" className="mt-2">
-                          Set Alert
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                </Select>
+              </div>
+            </div>
 
-                <div className="mt-6">
-                  <h3 className="text-sm font-medium mb-4">Rate Alerts</h3>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between p-4 rounded-lg border border-gray-100">
-                      <div>
-                        <p className="font-medium">EUR/USD</p>
-                        <p className="text-sm text-gray-500">Alert at 1.15</p>
-                      </div>
-                      <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700">
-                        Remove
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm mb-2 text-white">Amount</label>
+                <Input
+                  type="number"
+                  value={amount}
+                  onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm mb-2 text-white">Converted</label>
+                <Input
+                  type="text"
+                  value={`${converted.toFixed(2)} ${to}`}
+                  readOnly
+                />
+              </div>
+            </div>
+
+            <Button className="w-full bg-accent text-white hover:bg-warning hover:text-lumoBackground transition-all">
+              Convert Now
+            </Button>
+
+            <div className="text-sm text-white text-center pt-4">
+              Last updated: {new Date().toLocaleString()}
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </main>
-  )
+  );
 }
+
